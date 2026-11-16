@@ -13,7 +13,8 @@ function setup() {
   let spreadsheet;
   if (id) spreadsheet = SpreadsheetApp.openById(id);
   else {
-    spreadsheet = SpreadsheetApp.create('山餃訂單管理');
+    // 從既有試算表的「擴充功能 → Apps Script」建立時，沿用綁定的試算表。
+    spreadsheet = SpreadsheetApp.getActiveSpreadsheet() || SpreadsheetApp.create('山餃訂單管理');
     id = spreadsheet.getId();
     properties.setProperty('SPREADSHEET_ID', id);
   }
@@ -22,7 +23,7 @@ function setup() {
   if (!properties.getProperty('ALLOWED_ORIGIN')) properties.setProperty('ALLOWED_ORIGIN', PUBLIC_ORIGIN);
   if (!properties.getProperty('ACCEPT_LIVE_ORDERS')) properties.setProperty('ACCEPT_LIVE_ORDERS', 'false');
   sheet.setFrozenRows(1);
-  sheet.getRange(1,1,1,ORDER_HEADERS.length).setFontWeight('bold').setBackground('#e8d9c5');
+  sheet.getRange(1,1,1,ORDER_HEADERS.length).setFontWeight('bold').setBackground('#eeeeee');
   sheet.getRange('N:P').setNumberFormat('#,##0');
   console.log('試算表：' + spreadsheet.getUrl());
   return spreadsheet.getUrl();

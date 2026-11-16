@@ -4,13 +4,15 @@ const fs = require('node:fs');
 const vm = require('node:vm');
 const crypto = require('node:crypto');
 function backend() {
- const rows=[],cached=new Map(),props=new Map([['SPREADSHEET_ID','private-sheet'],['ACCEPT_LIVE_ORDERS','false']]);let lockBusy=false,released=0;
+ const rows=[],cached=new Map(),props=new Map([['SPREADSHEET_ID','private-sheet'],['ACCEPT_LIVE_ORDERS','false']]);let lockBusy=false,released=0,created=0;
  const range=(row,col,height=1,width=1)=>({getValues:()=>Array.from({length:height},(_,i)=>rows[row-1+i].slice(col-1,col-1+width)),setValues:values=>{values.forEach((v,i)=>rows[row-1+i]=[...v]);},createTextFinder:value=>({matchEntireCell(){return this;},findNext:()=>{const index=rows.findIndex((r,i)=>i>=row-1&&r[col-1]===value);return index<0?null:{getRow:()=>index+1};}})});
- const sheet={getLastRow:()=>rows.length,appendRow:row=>rows.push([...row]),getRange:range};
- const context={console,PropertiesService:{getScriptProperties:()=>({getProperty:key=>props.get(key)||null})},SpreadsheetApp:{openById:()=>({getSheetByName:()=>sheet}),flush:()=>{}},LockService:{getScriptLock:()=>({tryLock:()=>!lockBusy,releaseLock:()=>released++})},CacheService:{getScriptCache:()=>({get:key=>cached.get(key),put:(k,v)=>cached.set(k,v)})},Utilities:{DigestAlgorithm:{SHA_256:'sha256'},Charset:{UTF_8:'utf8'},computeDigest:(_,value)=>[...crypto.createHash('sha256').update(value).digest()],getUuid:()=>crypto.randomUUID(),formatDate:(_,__,format)=>format==='yyyyMMdd'?'20261116':'2026-11-16 21:00:00'},HtmlService:{XFrameOptionsMode:{ALLOWALL:1},createHtmlOutput:html=>({html,setXFrameOptionsMode(){return this;}})},ContentService:{MimeType:{JSON:1},createTextOutput:content=>({content,setMimeType(){return this;}})}};
+ const style={setFontWeight(){return this;},setBackground(){return this;},setNumberFormat(){return this;}};
+ const sheet={getLastRow:()=>rows.length,appendRow:row=>rows.push([...row]),getRange:(...args)=>typeof args[0]==='string'?style:{...range(...args),...style},setFrozenRows(){}};
+ const book={getSheetByName:()=>sheet,getId:()=>'private-sheet',getUrl:()=>'https://docs.google.com/spreadsheets/d/private-sheet',setSpreadsheetTimeZone(){}};
+ const context={console,PropertiesService:{getScriptProperties:()=>({getProperty:key=>props.get(key)||null,setProperty:(k,v)=>props.set(k,v)})},SpreadsheetApp:{openById:()=>book,getActiveSpreadsheet:()=>book,create:()=>{created++;return book;},flush:()=>{}},LockService:{getScriptLock:()=>({tryLock:()=>!lockBusy,releaseLock:()=>released++})},CacheService:{getScriptCache:()=>({get:key=>cached.get(key),put:(k,v)=>cached.set(k,v)})},Utilities:{DigestAlgorithm:{SHA_256:'sha256'},Charset:{UTF_8:'utf8'},computeDigest:(_,value)=>[...crypto.createHash('sha256').update(value).digest()],getUuid:()=>crypto.randomUUID(),formatDate:(_,__,format)=>format==='yyyyMMdd'?'20261116':'2026-11-16 21:00:00'},HtmlService:{XFrameOptionsMode:{ALLOWALL:1},createHtmlOutput:html=>({html,setXFrameOptionsMode(){return this;}})},ContentService:{MimeType:{JSON:1},createTextOutput:content=>({content,setMimeType(){return this;}})}};
  vm.createContext(context);vm.runInContext(fs.readFileSync('gas/Code.gs','utf8'),context);
  const properties={getProperty:key=>props.get(key)||null};
- return {context,rows,props,save:input=>context.saveOrder_(input,properties),busy:()=>lockBusy=true,released:()=>released};
+ return {context,rows,props,save:input=>context.saveOrder_(input,properties),busy:()=>lockBusy=true,released:()=>released,created:()=>created};
 }
 const order=(overrides={})=>({requestId:crypto.randomUUID(),mode:'test',consent:true,items:[{id:'p1',quantity:2}],fulfillment:'takeout',store:'旗艦店',customer:{name:'測試顧客',phone:'0900000000',email:'test@example.com',address:''},expectedTotal:170,...overrides});
 test('server prices and delivery rules are authoritative',()=>{
@@ -59,3 +61,5 @@ test('timeout keeps retry ID, failures do not become successful orders',async()=
  const again=f.api.submitOrder(input);const c=await f.ready(2);f.message('https://script.google.com',c,{...validReceipt,total:1});await assert.rejects(again,/無法驗證/);
  f.context.navigator.onLine=false;await assert.rejects(f.api.submitOrder(input),/離線/);
 });
+
+test('setup reuses the bound Sheet and is safe to run twice',()=>{const b=backend();b.props.delete('SPREADSHEET_ID');const url=b.context.setup();assert.equal(b.props.get('SPREADSHEET_ID'),'private-sheet');assert.equal(b.created(),0);assert.equal(b.rows.length,1);assert(url.includes('private-sheet'));b.context.setup();assert.equal(b.rows.length,1);assert.equal(b.props.get('ACCEPT_LIVE_ORDERS'),'false');});
