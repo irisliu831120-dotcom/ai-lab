@@ -1,6 +1,6 @@
 'use strict';
 const PREFIX = 'shan-jiao-pwa-';
-const CACHE = PREFIX + 'v2';
+const CACHE = PREFIX + 'v3';
 const ROOT = new URL('./', self.location.href).href;
 const HOME = new URL('index.html', ROOT).href;
 const CORE = ['./', 'index.html', 'manifest.webmanifest', 'pwa.js', 'checkout-config.js', 'checkout.js', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/icon-maskable-512.png', 'icons/apple-touch-icon.png', 'icons/favicon-32.png'];

@@ -1,6 +1,6 @@
 # 山餃：Google 試算表訂單串接
 
-狀態：前端、GAS 與本機測試完成；原生 Google 試算表已建立於 Google Drive 的 ChatGPT 資料夾，只有擁有者可存取。前端預設 `mode: 'test'`，但 GAS endpoint 留空。在 Google 授權部署完成前，網站仍為不傳送資料的模擬結帳。尚未完成 GAS 部署與雲端端對端測試。
+狀態：前端、GAS 與本機測試完成；原生 Google 試算表已建立於 Google Drive 的 ChatGPT 資料夾，只有擁有者可存取。使用者已提供 GAS `/exec` 網址，前端已設定此網址並維持 `mode: 'test'`。尚未驗證實際 Google 服務回覆與雲端寫入：目前執行環境無法直接連線至 Apps Script，瀏覽器驗證工具也無法啟動。請依下方驗收步驟送出一筆虛構測試資料，確認 Sheet 新增 TEST 訂單。
 
 ## 已確認的需求
 
