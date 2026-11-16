@@ -7,6 +7,8 @@
 <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
 <script src="./pwa.js" defer></script>
+<script src="./checkout-config.js" defer></script>
+<script src="./checkout.js" defer></script>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="山餃手作鍋貼品牌展示網站，探索金黃酥脆的日常美味。"><title>山餃 SHAN JIAO｜手作鍋貼</title>
 <script src="https://cdn.tailwindcss.com"></script><script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
 <style>
@@ -55,8 +57,8 @@
 <footer id="contact" class="footer"><div class="wrap"><div class="footer-grid"><div><h2 class="text-3xl mb-3">山餃</h2><p class="text-sm leading-loose">一口金黃，一份日常的溫暖。<br>手作鍋貼品牌概念網站</p></div><div><h3 class="text-lg mb-4">聯絡與社群</h3><div class="flex gap-3"><a href="https://www.instagram.com/" target="_blank" rel="noopener" aria-label="Instagram 平台首頁"><i data-lucide="instagram"></i></a><a href="https://www.facebook.com/" target="_blank" rel="noopener" aria-label="Facebook 平台首頁"><i data-lucide="facebook"></i></a><a href="https://line.me/zh-hant/" target="_blank" rel="noopener" aria-label="LINE 平台首頁"><i data-lucide="message-circle"></i></a></div><p class="text-xs mt-4">社群連結為平台首頁，品牌帳號與聯絡方式尚未建立。</p><button id="privacyOpen" class="underline text-sm mt-4">隱私權政策</button></div><div><h3 class="text-lg mb-3">訂閱山餃日常</h3><p class="text-sm mb-4">新品、季節限定與暖心消息。</p><form id="newsletter" class="flex gap-2 flex-wrap"><input class="field flex-1 min-w-0" type="email" aria-label="電子郵件" placeholder="你的電子郵件" required><button class="btn primary" type="submit">訂閱</button></form><p class="text-xs mt-3">展示表單，不會傳送或儲存電子郵件。</p></div></div><div class="line flex flex-wrap justify-between gap-3"><span>© 2026 SHAN JIAO 山餃 · 品牌概念展示</span><span>示意攝影：Unsplash · Icons：Lucide</span></div></div></footer>
 <!-- 購物車抽屜與結帳對話框 -->
 <div id="cartOverlay" class="overlay" hidden><aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="cartTitle" tabindex="-1"><div class="flexline"><h2 id="cartTitle" class="text-2xl">你的購物車</h2><button id="cartClose" class="iconbtn" aria-label="關閉購物車"><i data-lucide="x"></i></button></div><div id="cartItems" class="drawer-items"></div><div class="pt-5"><div class="flexline mb-4"><span>商品總金額</span><strong id="cartTotal" class="price">NT$ 0</strong></div><p class="notice mb-3">展示訂單，宅配運費於結帳時計算。</p><button id="checkoutOpen" class="btn primary w-full">前往結帳</button></div></aside></div>
-<dialog id="checkout"><div class="flexline mb-5"><h2 class="text-2xl">確認訂單</h2><button class="iconbtn" data-close="checkout" aria-label="關閉結帳"><i data-lucide="x"></i></button></div><form id="orderForm" class="formgrid"><div id="orderSummary" class="notice"></div><label>取餐方式<select id="fulfillment" class="field" required></select></label><label>姓名<input name="name" class="field" required maxlength="60" autocomplete="name"></label><label>聯絡電話<input name="phone" class="field" type="tel" required pattern="[0-9+() -]{8,20}" autocomplete="tel" placeholder="0912345678"></label><label>電子郵件（選填）<input name="email" type="email" class="field" autocomplete="email"></label><label id="storeField">取餐門市<select name="store" id="storeSelect" class="field"></select></label><label id="addressField" hidden>宅配地址<input name="address" class="field" autocomplete="street-address" maxlength="200"></label><div class="flexline"><span>應付總額（含運費）</span><strong id="orderTotal" class="price"></strong></div><p class="notice">本表單僅供展示，不會傳送資料、收款或建立真實訂單。</p><button class="btn primary" type="submit">確認建立訂單</button></form></dialog>
-<dialog id="success"><div class="text-center py-5"><i data-lucide="check-circle" width="56" height="56" class="mx-auto mb-4" style="color:#55734c"></i><h2 class="text-3xl">訂單已建立</h2><p id="successText" class="muted my-5"></p><button class="btn primary" data-close="success">繼續探索餐點</button></div></dialog><dialog id="privacy"><div class="flexline"><h2 class="text-2xl">隱私權政策</h2><button class="iconbtn" data-close="privacy" aria-label="關閉"><i data-lucide="x"></i></button></div><p class="muted mt-4">本展示網站僅於瀏覽器 localStorage 保存購物車商品與數量，不保存姓名、電話、地址或電子郵件。結帳及訂閱資料不會傳送至伺服器。外部 CDN、Google Fonts、Unsplash 與外部連結可能依各服務政策處理連線資訊。您可清除購物車或瀏覽器網站資料以移除本機紀錄。</p></dialog><div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<dialog id="checkout"><div class="flexline mb-5"><h2 class="text-2xl">確認訂單</h2><button class="iconbtn" data-close="checkout" aria-label="關閉結帳"><i data-lucide="x"></i></button></div><form id="orderForm" class="formgrid"><div id="orderSummary" class="notice"></div><label>取餐方式<select id="fulfillment" class="field" required></select></label><label>姓名<input name="name" class="field" required maxlength="60" autocomplete="name"></label><label>聯絡電話<input name="phone" class="field" type="tel" required pattern="[0-9+() -]{8,20}" autocomplete="tel" placeholder="0912345678"></label><label>電子郵件（選填）<input name="email" type="email" class="field" autocomplete="email"></label><label id="storeField">取餐門市<select name="store" id="storeSelect" class="field"></select></label><label id="addressField" hidden>宅配地址<input name="address" class="field" autocomplete="street-address" maxlength="200"></label><div class="flexline"><span>應付總額（含運費）</span><strong id="orderTotal" class="price"></strong></div><p id="checkoutNotice" class="notice">訂單服務設定中，目前僅供模擬，不傳送資料。</p><label id="orderConsentField" hidden><span><input id="orderConsent" type="checkbox"> 我了解目前為測試模式，同意將測試聯絡資料與商品明細傳送至 Google 試算表。</span></label><p id="orderStatus" class="notice" role="status" aria-live="polite" hidden></p><button id="orderSubmit" class="btn primary" type="submit">建立模擬訂單</button></form></dialog>
+<dialog id="success"><div class="text-center py-5"><i data-lucide="check-circle" width="56" height="56" class="mx-auto mb-4" style="color:#55734c"></i><h2 class="text-3xl">訂單已建立</h2><p id="successText" class="muted my-5"></p><button class="btn primary" data-close="success">繼續探索餐點</button></div></dialog><dialog id="privacy"><div class="flexline"><h2 class="text-2xl">隱私權政策</h2><button class="iconbtn" data-close="privacy" aria-label="關閉"><i data-lucide="x"></i></button></div><p class="muted mt-4">瀏覽器 localStorage 保存購物車商品與數量，sessionStorage 僅保存送單識別碼與內容雜湊供重試去重，不保存表單原文。訂單服務尚未設定時不傳送資料；啟用測試串接後，經您同意的測試姓名、電話、電子郵件、地址（宅配時）與商品明細會儲存於山餃管理者的 Google 試算表，請勿填入真實個資。目前不收款、不安排出餐。訂閱表單仍不傳送電子郵件。外部 CDN、Google Fonts、Unsplash 與外部連結可能依各服務政策處理連線資訊。您可清除購物車或瀏覽器網站資料以移除本機紀錄。</p></dialog><div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 <script>
 'use strict';
 // 商品與門市集中管理：所有價格、地址及營運資訊皆為展示資料。
@@ -92,11 +94,45 @@ function openCart(){previousFocus=document.activeElement;$('cartOverlay').hidden
 function closeCart(restore=true){$('cartOverlay').hidden=true;document.body.style.overflow='';if(restore&&previousFocus)previousFocus.focus();}
 // 依商品類型限制取餐方式，避免現煎餐點誤選冷凍宅配。
 function updateOrder(){const mode=$('fulfillment').value,delivery=mode==='delivery';$('addressField').hidden=!delivery;$('addressField').querySelector('input').required=delivery;$('addressField').querySelector('input').disabled=!delivery;$('storeField').hidden=delivery;$('storeSelect').disabled=delivery;$('orderTotal').textContent=money(total()+(delivery?160:0));}
-function openCheckout(){if(!Object.keys(cart).length)return;const hasGift=Object.keys(cart).some(id=>get(id).cat===4),hasHot=Object.keys(cart).some(id=>get(id).cat!==4);$('orderForm').reset();$('fulfillment').innerHTML=(!hasGift?'<option value="dine">內用</option>':'')+'<option value="takeout">外帶</option>'+(!hasHot?'<option value="delivery">冷凍宅配（運費 NT$ 160）</option>':'');$('storeSelect').innerHTML=stores.map(s=>`<option>${s.name}</option>`).join('');$('orderSummary').textContent=Object.entries(cart).map(([id,n])=>`${get(id).name} × ${n}`).join('；')+'｜商品小計 '+money(total());updateOrder();closeCart(false);$('checkout').showModal();}
+function openCheckout(){if(!Object.keys(cart).length)return;const hasGift=Object.keys(cart).some(id=>get(id).cat===4),hasHot=Object.keys(cart).some(id=>get(id).cat!==4);$('orderForm').reset();$('orderStatus').hidden=true;$('orderStatus').textContent='';$('fulfillment').innerHTML=(!hasGift?'<option value="dine">內用</option>':'')+'<option value="takeout">外帶</option>'+(!hasHot?'<option value="delivery">冷凍宅配（運費 NT$ 160）</option>':'');$('storeSelect').innerHTML=stores.map(s=>`<option>${s.name}</option>`).join('');$('orderSummary').textContent=Object.entries(cart).map(([id,n])=>`${get(id).name} × ${n}`).join('；')+'｜商品小計 '+money(total());updateOrder();closeCart(false);$('checkout').showModal();}
 // 事件委派：支援動態產生的餐點卡片、分類及購物車按鈕。
 document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const d=b.dataset;if(d.add)add(d.add);if(d.buy){add(d.buy);openCart();}if(d.cat!==undefined){category=Number(d.cat);renderMenu();$('menuTabs').querySelector(`[data-cat="${category}"]`).focus();}if(d.store!==undefined){storeIndex=Number(d.store);renderLocation();$('locationTabs').querySelector(`[data-store="${storeIndex}"]`).focus();}if(d.qty){const n=(cart[d.qty]||0)+Number(d.delta);if(n<=0)delete cart[d.qty];else cart[d.qty]=Math.min(n,99);renderCart();const next=$('cartItems').querySelector(`[data-qty="${d.qty}"][data-delta="${d.delta}"]`);(next||$('cartClose')).focus();}if(d.remove){delete cart[d.remove];renderCart();$('cartClose').focus();}if(d.close)$(d.close).close();});
 $('cartOpen').addEventListener('click',openCart);$('cartClose').addEventListener('click',()=>closeCart());$('cartOverlay').addEventListener('click',e=>{if(e.target===$('cartOverlay'))closeCart();});$('checkoutOpen').addEventListener('click',openCheckout);$('fulfillment').addEventListener('change',updateOrder);
-$('orderForm').addEventListener('submit',e=>{e.preventDefault();if(!Object.keys(cart).length)return;const amount=total()+($('fulfillment').value==='delivery'?160:0);const code='SJ-'+Date.now().toString(36).toUpperCase();cart={};renderCart();$('checkout').close();$('orderForm').reset();$('successText').textContent=`展示訂單 ${code}｜總額 ${money(amount)}。此為模擬訂單，未實際收款或通知門市。`;$('success').showModal();});
+let submittingOrder=false;
+$('checkout').addEventListener('cancel',event=>{if(submittingOrder)event.preventDefault();});
+$('orderForm').addEventListener('submit',async event=>{
+ event.preventDefault();
+ if(submittingOrder||!Object.keys(cart).length)return;
+ if(!$('orderForm').reportValidity())return;
+ const gateway=window.ShanJiaoCheckout;
+ if(!gateway){notify('訂單元件尚未載入，請重新整理後再試。');return;}
+ const amount=total()+($('fulfillment').value==='delivery'?160:0);
+ const mode=gateway.mode;
+ if(mode==='demo'){
+  const code='DEMO-'+Date.now().toString(36).toUpperCase();
+  cart={};renderCart();$('checkout').close();$('orderForm').reset();
+  $('successText').textContent=`模擬訂單 ${code}｜總額 ${money(amount)}。尚未連接 Google 試算表，未傳送資料、收款或通知門市。`;
+  $('success').querySelector('h2').textContent='模擬訂單已建立';$('success').showModal();return;
+ }
+ const values=new FormData($('orderForm'));
+ const items=Object.entries(cart).sort(([a],[b])=>a.localeCompare(b)).map(([id,quantity])=>({id,quantity}));
+ const payload={items,fulfillment:$('fulfillment').value,store:$('fulfillment').value==='delivery'?'':$('storeSelect').value,customer:{name:String(values.get('name')||'').trim(),phone:String(values.get('phone')||'').trim(),email:String(values.get('email')||'').trim(),address:String(values.get('address')||'').trim()},consent:$('orderConsent').checked,expectedTotal:amount};
+ submittingOrder=true;
+ const controls=[...$('orderForm').querySelectorAll('input,select,button'),...$('checkout').querySelectorAll('[data-close]')];
+ const prior=controls.map(control=>control.disabled);controls.forEach(control=>control.disabled=true);
+ const originalLabel=$('orderSubmit').textContent;$('orderSubmit').textContent='送出中，請稍候…';
+ $('orderStatus').hidden=false;$('orderStatus').textContent='正在確認訂單，請不要關閉此頁面。';
+ try{
+  const result=await gateway.submitOrder(payload);
+  // Only a verified server receipt permits clearing the cart.
+  for(const item of items){const remaining=(cart[item.id]||0)-item.quantity;if(remaining>0)cart[item.id]=remaining;else delete cart[item.id];}
+  renderCart();$('checkout').close();$('orderForm').reset();
+  $('success').querySelector('h2').textContent=result.mode==='test'?'測試訂單已儲存':'訂單已收到，等待確認';
+  $('successText').textContent=`${result.orderId}｜總額 ${money(result.total)}。`+(result.mode==='test'?'已寫入測試試算表，不收款、不安排出餐。':'已儲存至訂單系統，尚未付款，請等待門市確認。');
+  $('success').showModal();gateway.completeOrder();
+ }catch(error){$('orderStatus').textContent=error.message||'暫時無法確認訂單，請以相同內容重試。';}
+ finally{submittingOrder=false;controls.forEach((control,index)=>control.disabled=prior[index]);$('orderSubmit').textContent=originalLabel;}
+});
 $('newsletter').addEventListener('submit',e=>{e.preventDefault();e.target.reset();notify('訂閱操作成功（展示模式，未實際寄送）');});$('privacyOpen').addEventListener('click',()=>$('privacy').showModal());
 $('navToggle').addEventListener('click',()=>{const open=$('navlinks').classList.toggle('open');$('navToggle').setAttribute('aria-expanded',String(open));});$('navlinks').addEventListener('click',e=>{if(e.target.closest('a')){$('navlinks').classList.remove('open');$('navToggle').setAttribute('aria-expanded','false');}});
 // 鍵盤操作：抽屜焦點限制、Esc 關閉與分類方向鍵切換。

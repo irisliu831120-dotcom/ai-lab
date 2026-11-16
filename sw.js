@@ -1,9 +1,9 @@
 'use strict';
 const PREFIX = 'shan-jiao-pwa-';
-const CACHE = PREFIX + 'v1';
+const CACHE = PREFIX + 'v2';
 const ROOT = new URL('./', self.location.href).href;
 const HOME = new URL('index.html', ROOT).href;
-const CORE = ['./', 'index.html', 'manifest.webmanifest', 'pwa.js', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/icon-maskable-512.png', 'icons/apple-touch-icon.png', 'icons/favicon-32.png'];
+const CORE = ['./', 'index.html', 'manifest.webmanifest', 'pwa.js', 'checkout-config.js', 'checkout.js', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/icon-maskable-512.png', 'icons/apple-touch-icon.png', 'icons/favicon-32.png'];
 const CDN = ['https://cdn.tailwindcss.com/', 'https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js'];
 const MEDIA_HOSTS = new Set(['images.unsplash.com', 'i.postimg.cc', 'fonts.googleapis.com', 'fonts.gstatic.com']);
 self.addEventListener('install', event => {
