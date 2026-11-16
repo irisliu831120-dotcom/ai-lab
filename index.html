@@ -13,13 +13,13 @@
 @media(prefers-reduced-motion:reduce){.booking-float{transition:none}.booking-float:hover{transform:none}}
 
 /* Decorative street life below the hero copy. */
-.hero{position:relative;isolation:isolate;overflow:hidden;padding:64px 0 150px}
+.hero{position:relative;isolation:isolate;overflow:hidden;min-height:clamp(520px,calc(100svh - 90px),640px);padding:48px 0 205px}
 .hero>.wrap{position:relative;z-index:2;width:100%}
-.hero-crowd{position:absolute;inset:auto 0 0;height:120px;pointer-events:none;z-index:1;overflow:hidden;background:linear-gradient(transparent,rgba(35,23,16,.32))}
+.hero-crowd{position:absolute;inset:auto 0 52px;height:150px;pointer-events:none;z-index:1;overflow:hidden;background:linear-gradient(transparent,rgba(35,23,16,.72))}
 .hero-crowd::after{content:"";position:absolute;bottom:17px;left:0;right:0;height:1px;background:#e8d9c533}
-.passerby{position:absolute;left:-90px;bottom:18px;width:56px;height:94px;color:var(--person-color,#e8d9c5);opacity:var(--person-opacity,.65);animation:street-cross var(--travel,22s) linear var(--delay,0s) infinite;will-change:transform}
+.passerby{position:absolute;left:-90px;bottom:18px;width:78px;height:132px;color:var(--person-color,#e8d9c5);opacity:.95;filter:drop-shadow(0 2px 3px #0009);animation:street-cross var(--travel,22s) linear var(--delay,0s) infinite;will-change:transform}
 .passerby.reverse{left:auto;right:-90px;animation-name:street-cross-back}
-.passerby svg{width:56px;height:94px;overflow:visible;transform:scale(var(--size,1));transform-origin:bottom center}
+.passerby svg{width:78px;height:132px;overflow:visible;transform:scale(var(--size,1));transform-origin:bottom center}
 .passerby.reverse svg{transform:scale(calc(-1 * var(--size,1)),var(--size,1))}
 .passerby .limb{transform-box:fill-box;transform-origin:50% 0%;animation:street-stride var(--stride,.8s) ease-in-out var(--delay,0s) infinite alternate}
 .passerby .limb.opposite{animation-direction:alternate-reverse}
@@ -28,8 +28,8 @@
 @keyframes street-cross{from{transform:translateX(0)}to{transform:translateX(calc(100vw + 180px))}}
 @keyframes street-cross-back{from{transform:translateX(0)}to{transform:translateX(calc(-100vw - 180px))}}
 @keyframes street-stride{from{rotate:-24deg}to{rotate:24deg}}
-@media(max-width:600px){.hero{padding:48px 0 145px}.crowd-control{left:16px}.passerby{--travel:26s}}
-@media(prefers-reduced-motion:reduce){.hero-crowd,.crowd-control{display:none}.hero{padding-bottom:64px}}
+@media(max-width:600px){.hero{padding:32px 0 170px}.hero-crowd{height:120px}.passerby,.passerby svg{width:62px;height:104px}.crowd-control{left:16px}}
+@media(prefers-reduced-motion:reduce){.hero:not(.crowd-user-playing) .passerby,.hero:not(.crowd-user-playing) .limb{animation-play-state:paused}}
 </style></head><body><a class="skip" href="#main">跳至主要內容</a>
 <!-- 頂部導覽與品牌標誌 -->
 <header class="nav"><div class="wrap navinner"><a class="logo" href="#home" aria-label="山餃首頁"><svg width="43" height="43" viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M5 31 Q24 3 43 31 Q24 47 5 31Z" stroke="currentColor" stroke-width="2.4"/><path d="M13 28l7-9 5 8 5-8 6 9M12 34q12 6 24 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span><strong>山餃</strong><small>SHAN JIAO</small></span></a><nav id="navlinks" class="navlinks" aria-label="主要導覽"><a href="#story">品牌故事</a><a href="#featured">熱門餐點</a><a href="#menu">線上點餐</a><a href="#gift">冷凍禮盒</a><a href="#locations">門市據點</a><a href="#contact">聯絡我們</a></nav><div class="actions"><button class="iconbtn" id="cartOpen" aria-label="開啟購物車"><i data-lucide="shopping-bag"></i><span class="badge" id="badge">0</span></button><a class="btn primary" href="#menu">立即點餐</a><button class="iconbtn mobile" id="navToggle" aria-label="展開選單" aria-expanded="false" aria-controls="navlinks"><i data-lucide="menu"></i></button></div></div></header>
@@ -96,6 +96,21 @@ document.addEventListener('error',e=>{if(e.target.tagName==='IMG'&&!e.target.dat
 $('featuredGrid').innerHTML=[products[0],products[1],products[5]].map(card).join('');renderMenu();renderLocation();renderCart();icons();
 </script><a class="booking-float" href="https://calendar.app.google/4QvmLWkzVTQ5UWK59" target="_blank" rel="noopener noreferrer" aria-label="立即預約（另開分頁）"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18m-12 5 2 2 4-4"/></svg><span>立即預約</span></a>
 <script>
-(function(){const button=document.getElementById('crowdToggle');const hero=document.getElementById('home');button.addEventListener('click',function(){const paused=hero.classList.toggle('crowd-paused');button.setAttribute('aria-pressed',String(paused));button.textContent=paused?'播放動畫':'暫停動畫';button.setAttribute('aria-label',paused?'播放人來人往動畫':'暫停人來人往動畫');});})();
+(function(){
+const button=document.getElementById('crowdToggle');
+const hero=document.getElementById('home');
+const preference=window.matchMedia('(prefers-reduced-motion: reduce)');
+let paused=preference.matches;
+function render(){
+ hero.classList.toggle('crowd-paused',paused);
+ hero.classList.toggle('crowd-user-playing',!paused);
+ button.setAttribute('aria-pressed',String(paused));
+ button.textContent=paused?'▶ 播放人來人往動畫':'Ⅱ 暫停人來人往動畫';
+ button.setAttribute('aria-label',paused?'播放人來人往動畫':'暫停人來人往動畫');
+}
+button.addEventListener('click',function(){paused=!paused;render();});
+if(preference.addEventListener)preference.addEventListener('change',function(event){paused=event.matches;render();});
+render();
+})();
 </script>
 </body></html>
